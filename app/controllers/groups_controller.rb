@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user! , only: [:new, :create,:edit, :update, :destroy]
+  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy]
   def index
     @groups = Group.all
   end
@@ -9,11 +9,12 @@ end
 
 
 def edit
-  @group = Group.find(params[:id])
+    @group = Group.find(params[:id])
 
-  if current_user != @group.user
+    if current_user != @group.user
       redirect_to root_path, alert: "You have no permission."
     end
+
 end
 
   def new
