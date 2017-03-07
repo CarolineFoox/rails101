@@ -5,19 +5,20 @@ class GroupsController < ApplicationController
   before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy]
   def index
     @groups = Group.all
+end
 
+def create
+    @group = Group.new(group_params)
+    @group.user = current_user
+    if @group.save
+    current_user.join!(@group)
+      redirect_to groups_path
+    else
+      render :new
 
-  def create
-      @group = Group.new(group_params)
-      @group.user = current_user
-      if @group.save
-      current_user.join!(@group)
-        redirect_to groups_path
-      else
-        render :new
-      end
+    end
 
-
+    end
 
 
   def show
@@ -52,9 +53,9 @@ def update
      else
        flash[:warning] = "你已经是本讨论版成员了！"
      end
-
      redirect_to group_path(@group)
     end
+
 
     def quit
       @group = Group.find(params[:id])
@@ -78,7 +79,13 @@ def find_group_and_check_permission
     if current_user != @group.user
       redirect_to root_path, alert: "You have no permission."
     end
-  end
+ end
+
 
 def group_params
   params.require(:group).permit(:title, :description)
+end
+
+
+
+  end
